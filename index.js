@@ -6,7 +6,12 @@ const connect = require('./utils/connect');
 require('dotenv').config();
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URI,
+    optionsSuccessStatus: 200,
+  })
+);
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
