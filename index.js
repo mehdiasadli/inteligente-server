@@ -17,7 +17,11 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(`/api`, require('./routes'));
+app.use((_, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
+app.use('/api', require('./routes'));
 
 const port = process.env.PORT || 4001;
 app.listen(port, () => {
