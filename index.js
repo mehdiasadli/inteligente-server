@@ -16,6 +16,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/', (_, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+});
 app.use(`/api`, require('./routes'));
 
 const port = process.env.PORT || 4001;
