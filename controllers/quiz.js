@@ -10,8 +10,6 @@ exports.startQuiz = async (req, res) => {
   const { field, subfield, mode } = req.body;
 
   try {
-    const sub = await Subfield.findById(subfield);
-
     const diffs = mode === 'Hard' ? [7, 8, 9, 10] : mode === 'Easy' ? [1, 2, 3, 4] : [4, 5, 6, 7];
     const allQuestions = await Question.find({ field, subfield });
     let questions = [];
@@ -126,6 +124,31 @@ exports.getAverage = async (_, res) => {
         }))
         .sort((a, b) => b.average - a.average)
     );
+  } catch (error) {
+    return res.status(500).json({ message: 'Server xətası', error });
+  }
+};
+
+exports.getUserQuizzes = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const quizes = await Quiz.find({ finished: true, user: id })
+      .populate({
+        path: 'field',
+        select: 'name',
+      })
+      .populate({
+        path: 'subfield',
+        select: 'name',
+      })
+      .populate({
+        path: 'questions',
+        select: 'title',
+      })
+      .sort({ updatedAt: 1 });
+
+    res.status(200).json(quizes);
   } catch (error) {
     return res.status(500).json({ message: 'Server xətası', error });
   }
