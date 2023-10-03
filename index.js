@@ -5,14 +5,18 @@ const connect = require('./utils/connect');
 require('dotenv').config();
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URI,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+    allowedHeaders: 'Authorization',
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((_, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  next();
-});
 app.use('/api', require('./routes'));
 
 const port = process.env.PORT || 4001;
