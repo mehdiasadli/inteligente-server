@@ -11,7 +11,7 @@ app.use(
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
-    allowedHeaders: 'Authorization',
+    allowedHeaders: 'Authorization, Content-Type',
   })
 );
 app.use(express.json());
