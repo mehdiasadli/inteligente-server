@@ -7,7 +7,7 @@ const randomIndex = require('../utils/randomIndex');
 const QUESTION_COUNT_PER_DIFF = 5;
 
 exports.startQuiz = async (req, res) => {
-  const { field, subfield, mode } = req.body;
+  const { field, subfield, mode, user } = req.body;
 
   try {
     const diffs = mode === 'Hard' ? [7, 8, 9, 10] : mode === 'Easy' ? [1, 2, 3, 4] : [4, 5, 6, 7];
@@ -26,6 +26,9 @@ exports.startQuiz = async (req, res) => {
         });
       }
     });
+    // delete all other unfinished quizzes
+    await Quiz.deleteMany({ finished: false, user });
+
     const quiz = new Quiz({ ...req.body, questions });
     await quiz.save();
 
@@ -146,7 +149,7 @@ exports.getUserQuizzes = async (req, res) => {
         path: 'questions',
         select: 'title',
       })
-      .sort({ updatedAt: 1 });
+      .sort({ updatedAt: -1 });
 
     res.status(200).json(quizes);
   } catch (error) {
